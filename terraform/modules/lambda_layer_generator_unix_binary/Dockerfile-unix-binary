@@ -1,0 +1,9 @@
+FROM amazonlinux:2017.03
+
+LABEL "com.fc.vendor"="Lead Street Security"
+LABEL version="1.0"
+LABEL description="Builds a Lambda Layer zip containing specified unix binaries."
+
+ADD build_unix_binary_lambda_layer_zip.sh .
+RUN chmod +x build_unix_binary_lambda_layer_zip.sh
+CMD ./build_unix_binary_lambda_layer_zip.sh $YUM_PACKAGES_TO_INCLUDE && printf "Run following commands to copy built zip file and remove container: \n\ndocker cp `cat /proc/self/cgroup | grep "cpu:/docker" | cut -d/ -f3`:`ls /*.zip` \"./$LAMBDA_LAYER_ZIP_PACKAGE_NAME\" && docker rm `cat /proc/self/cgroup | grep "cpu:/docker" | cut -d/ -f3`\n"
