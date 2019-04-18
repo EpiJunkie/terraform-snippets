@@ -1,0 +1,83 @@
+
+variable "dict_of_approved_userids" {
+  default = {
+    "AIDAEXAMPLEID" = "jdoe"
+    "AROAEXAMPLEID:*" = "jdoe_role from all accounts"
+    "AROAEXAMPLEID:123456789012" = "jdoe_role from account 123456789012"
+  }
+  description = "Map of userids to grant access to S3 remote state bucket. Can be either in the 'AIDAEXAMPLEID' or 'AROAEXAMPLEID:*' format. To get userid use 'aws iam get-user --user jdoe'. To get roleid use 'aws iam get-role --role-name api-lambda-role' and then append ':<account_num>' or ':*'. Keep in mind, it is very easy to lock out your access to the bucket by specifying the wrong resources or wrong userids."
+}
+
+variable "list_of_restricted_s3_resource_arns" {
+  default = [
+    "arn:aws:s3:::terraform-remote-state-example",
+    "arn:aws:s3:::terraform-remote-state-example/*"
+  ]
+  description = "List of S3 ARNs to restrict access to S3 remote state bucket. Normally the S3 bucket and all objects is desired. Keep in mind, it is very easy to lock out your access to the bucket by specifying the wrong resources or wrong userids."
+}
+
+variable "s3_bucket_name" {
+  default     = "terraform-remote-state-example"
+  description = "S3 bucket name."
+}
+
+variable "s3_bucket_description" {
+  default     = "S3 Remote Terraform State Store for test"
+  description = "Eg: S3 Remote Terraform State Store for <INSERT PROJECT NAME>"
+}
+
+variable "s3_expire_previous_versions_bool" {
+  default     = "true"
+  description = "Boolean to control expiring (delete) previous versions."
+}
+
+variable "s3_expire_previous_versions_period" {
+  default     = "365"
+  description = "Number of days before expiring (delete) previous versions."
+}
+
+variable "s3_expire_previous_versions_prefix" {
+  default     = ""
+  description = "S3 prefix for Lifecycle for expiring (delete) previous versions."
+}
+
+variable "s3_transition_previous_versions_to_glacier_bool" {
+  default     = "true"
+  description = "Boolean to control transitioning previous versions to Glacier backed storage."
+}
+
+variable "s3_transition_previous_versions_to_glacier_prefix" {
+  default     = "true"
+  description = "Boolean to control transitioning previous versions to Glacier backed storage."
+}
+
+variable "s3_transition_previous_versions_to_glacier_period" {
+  default     = "14"
+  description = "Number of days before transitioning previous versions to Glacier backed storage."
+}
+
+variable "dynamodb_name" {
+  default     = "terraform-state-lock-example"
+  description = "DynamoDB table name."
+}
+
+variable "dynamodb_description" {
+  default     = "DynamoDB Terraform State Lock Table"
+  description = "Eg: DynamoDB Terraform State Lock Table for <INSERT PROJECT NAME>"
+}
+
+module "remote_state_storage_test" {
+  source                                            = "../../modules/remote_state_s3_and_dynamodb"
+  dict_of_approved_userids                          = "${var.dict_of_approved_userids}"
+  list_of_restricted_s3_resource_arns               = "${var.list_of_restricted_s3_resource_arns}"
+  s3_bucket_name                                    = "${var.s3_bucket_name}"
+  s3_bucket_description                             = "${var.s3_bucket_description}"
+  s3_expire_previous_versions_bool                  = "${var.s3_expire_previous_versions_bool}"
+  s3_expire_previous_versions_period                = "${var.s3_expire_previous_versions_period}"
+  s3_expire_previous_versions_prefix                = "${var.s3_expire_previous_versions_prefix}"
+  s3_transition_previous_versions_to_glacier_bool   = "${var.s3_transition_previous_versions_to_glacier_bool}"
+  s3_transition_previous_versions_to_glacier_period = "${var.s3_transition_previous_versions_to_glacier_period}"
+  s3_transition_previous_versions_to_glacier_prefix = "${var.s3_transition_previous_versions_to_glacier_prefix}"
+  dynamodb_name                                     = "${var.dynamodb_name}"
+  dynamodb_description                              = "${var.dynamodb_description}"
+}
