@@ -21,7 +21,7 @@ resource "null_resource" "build_lambda_layer_zip_unix_binary" {
   }
 
   provisioner "local-exec" {
-    command = "docker build ${path.module}/ -f ${path.module}/Dockerfile-unix-binary -t lambda-layer-generator"
+    command = "docker build ${path.module}/ -f ${path.module}/Dockerfile -t lambda-layer-generator"
   }
 
   provisioner "local-exec" {

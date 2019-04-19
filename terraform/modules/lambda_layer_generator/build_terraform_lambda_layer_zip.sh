@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # Title:                    build_terraform_lambda_layer_zip.sh
 # Author:                   Justin Holcomb
 # Created:                  April 18, 2019
-# Version:                  0.0.1
+# Version:                  0.0.2
 # Description:              Ran from inside Amazon Linux docker/EC2 to generate
 #                           zip package to be used as AWS Lambda Layer with
 #                           terraform binay.
