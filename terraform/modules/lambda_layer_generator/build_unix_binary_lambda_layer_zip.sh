@@ -29,7 +29,7 @@ fi
 needed_deps=`yum install --assumeno $list_of_pkgs_to_install | grep -A 1000 "Installing for dependencies" | grep -B 1000 "Transaction Summary" | tail -n +1 | head -n -2 | awk '{print $1}' | tr '\n' ' '`
 
 # Download tools needed to unpackage RPM files and repackage as zip.
-yum install -y yum-utils rpmdevtools zip wget
+yum install -y yum-utils rpmdevtools zip
 
 # Download RPM files and dependencies
 yumdownloader $list_of_pkgs_to_install $needed_deps

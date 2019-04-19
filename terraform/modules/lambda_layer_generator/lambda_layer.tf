@@ -17,18 +17,18 @@ resource "null_resource" "build_lambda_layer_zip_unix_binary" {
   # variable is changed.
   triggers {
     last_build = "${var.lambda_layer_build_date}"
-    packages   = "${var.yum_packages_to_include}"
+    packages   = "${var.packages_to_include}"
   }
 
   provisioner "local-exec" {
-    command = "docker build ${path.module}/ -f ${path.module}/Dockerfile-unix-binary -t lambda-layer-unix-binary"
+    command = "docker build ${path.module}/ -f ${path.module}/Dockerfile-unix-binary -t lambda-layer-generator"
   }
 
   provisioner "local-exec" {
-    command = "docker run -e YUM_PACKAGES_TO_INCLUDE=\"${var.yum_packages_to_include}\" -e LAMBDA_LAYER_ZIP_PACKAGE_NAME=\"${var.lambda_layer_zip_package_name}\" lambda-layer-unix-binary | tee /tmp/lambda-layer-unix-binary-builder.log"
+    command = "docker run -e BUILD_TYPE=\"${var.build_type}\" -e YUM_PACKAGES_TO_INCLUDE=\"${var.packages_to_include}\" -e LAMBDA_LAYER_ZIP_PACKAGE_NAME=\"${var.lambda_layer_zip_package_name}\" lambda-layer-generator | tee /tmp/lambda-layer-generator.log"
   }
 
   provisioner "local-exec" {
-    command = "eval \"`tail -n1 /tmp/lambda-layer-unix-binary-builder.log`\""
+    command = "eval \"`tail -n1 /tmp/lambda-layer-generator.log`\""
   }
 }

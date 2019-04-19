@@ -1,17 +1,22 @@
 
-variable "layer_name" {
-  default = "lambda-layer-unix-binary"
-  description = "Lambda Layer name in AWS."
+variable "build_type" {
+  default = "unix"
+  description = "Required. Build type as defined by this module. Can be 'unix', 'python36', or 'terraform'."
 }
 
-variable "yum_packages_to_include" {
+variable "layer_name" {
+  default = "lambda-layer-generator"
+  description = "Required. Lambda Layer name in AWS."
+}
+
+variable "packages_to_include" {
   default = "pigz pv jq mysql56 mysql56-devel"
-  description = "Space separated list of yum packages available on Amazon Linux (v1) to be included in Lambda Layer. Changes trigger layer package rebuild."
+  description = "Required when using 'build_type' is 'unix' or 'python36'. Space separated list of packages to be included in Lambda Layer. Changes in value will trigger layer package rebuild."
 }
 
 variable "lambda_layer_build_date" {
-  default = "20190418_0457"
-  description = "Arbitrary date string used to trigger new Layer builds and also make unique file names."
+  default = "20190418_1956"
+  description = "Required. Arbitrary date string used to trigger new Layer builds and also make unique file names."
 }
 
 variable "layer_compatibility" {
@@ -19,23 +24,24 @@ variable "layer_compatibility" {
     "python3.6"
   ]
   type = "list"
-  description = "List of compatible runtimes this layer can be used for. Limit 5. See: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
+  description = "Required. List of compatible runtimes this layer can be used for. Limit 5. See: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
 }
 
 variable "layer_license" {
   default = ""
-  description = "An SPDX license identifier used for the Lambda Layer. For example, BSD-2-Clause. See: https://spdx.org/licenses/"
+  description = "Optional. An SPDX license identifier used for the Lambda Layer. For example, BSD-2-Clause. See: https://spdx.org/licenses/"
 }
 
 module "example_lambda_layer" {
-  source                        = "../../modules/lambda_layer_generator_unix_binary"
+  source                        = "../../modules/lambda_layer_generator"
+  build_type                    = "${var.build_type}"
   layer_name                    = "${var.layer_name}"
-  layer_description             = "Contains ${var.yum_packages_to_include} unix binaries. Built at: ${var.lambda_layer_build_date}"
-  yum_packages_to_include       = "${var.yum_packages_to_include}"
+  layer_description             = "Contains ${var.packages_to_include} unix binaries. Built at: ${var.lambda_layer_build_date}"
+  packages_to_include       = "${var.packages_to_include}"
   layer_compatibility           = "${var.layer_compatibility}"
   layer_license                 = "${var.layer_license}"
   lambda_layer_build_date       = "${var.lambda_layer_build_date}"
-  lambda_layer_zip_package_name = "${var.lambda_layer_build_date} ${var.yum_packages_to_include} lambda layer.zip"
+  lambda_layer_zip_package_name = "${var.lambda_layer_build_date} ${var.packages_to_include} lambda layer.zip"
 }
 
 ### Partial aws_lambda_function example:

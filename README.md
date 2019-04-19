@@ -6,7 +6,7 @@ Contains terraform modules (with templates) for various purposes.
 
 ### ... with Unix binaries
 
-[terraform/modules/lambda_layer_generator_unix_binary/](terraform/modules/lambda_layer_generator_unix_binary)
+[terraform/modules/lambda_layer_generator/](terraform/modules/lambda_layer_generator)
 
 ## Secure remote terraform state file with DynamoDB locking
 
