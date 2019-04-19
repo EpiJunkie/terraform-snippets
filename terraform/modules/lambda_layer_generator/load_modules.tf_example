@@ -11,7 +11,7 @@ variable "layer_name" {
 
 variable "packages_to_include" {
   default = "pigz pv jq mysql56 mysql56-devel"
-  description = "Required when using 'build_type' is 'unix' or 'python36'. Space separated list of packages to be included in Lambda Layer. Changes in value will trigger layer package rebuild."
+  description = "Required when 'build_type' is 'unix' or 'python36'. Space separated list of packages to be included in Lambda Layer. Changes in value will trigger layer package rebuild."
 }
 
 variable "lambda_layer_build_date" {
@@ -36,8 +36,8 @@ module "example_lambda_layer" {
   source                        = "../../modules/lambda_layer_generator"
   build_type                    = "${var.build_type}"
   layer_name                    = "${var.layer_name}"
-  layer_description             = "Contains ${var.packages_to_include} unix binaries. Built at: ${var.lambda_layer_build_date}"
-  packages_to_include       = "${var.packages_to_include}"
+  layer_description             = "Contains ${var.packages_to_include}. Built at: ${var.lambda_layer_build_date}"
+  packages_to_include           = "${var.packages_to_include}"
   layer_compatibility           = "${var.layer_compatibility}"
   layer_license                 = "${var.layer_license}"
   lambda_layer_build_date       = "${var.lambda_layer_build_date}"
